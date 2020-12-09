@@ -24,22 +24,30 @@ run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el 
   }
 
   ##make clin_df into same structutre and join on sample
+
+
   #clin_tb defined
 
-  expr_os_tb <- left_join(expr_tb, clin_tb, by = "sample")
+  expr_os_tb <- dplyr::left_join(expr_tb, clin_tb, by = "sample")
 
-  fit_tree <- rpart::rpart(OS ~ surv_event, data = expr_os_tb, method = "anova")
+  fit_tree <- rpart::rpart(OS ~ gene_id, data = expr_os_tb, method = "anova")
 
   ##run rpart
   rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
   decision_values <- fit_tree$splits
   cut_off <- decision_values[1,4]
 
-  high_low <- ifelse(CRABP2_values$`8330` >= cut_off,"High","Low")
-  clinical_data$CRABP2_Cohort <- as.vector(high_low)
+  high_low <- ifelse(expr_os_tb$gene_id >= cut_off,"High","Low")
+  clin_df$paste(gene_id,"_grouped") <- as.vector(high_low)
 
-  return(clin_rp_tb)
+  return(clin_df)
 }
+
+result_df <- run_rpart(expr_df, "RARB", clin_df, "OS", "OS.time", "sample")
+
+
+
+
 ##combine expr and surv
 rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
 decision_values <- fit_tree$splits
@@ -61,3 +69,6 @@ ggsurvplot(fit1, data = clinical_data, pval = TRUE,
            legend.labs = c("High Expression (n=60)", "Low Expression (n=468)"),
            pval.size = 5,
            font.legend = c(10, "plain", "black"))
+
+clin_df <- readRDS("inst/extdata/clin_df.rds")
+expr_df <- readRDS("inst/extdata/expr_df.rds")
