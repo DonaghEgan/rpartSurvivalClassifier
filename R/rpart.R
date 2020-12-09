@@ -1,20 +1,47 @@
 #' Run rpart
 #' this can be multi-line if we like
 #'
-#' @param rpart_df a data.frame containing data of format:
+#' @param expr_df data.frame containing expression in log2tpm with a unique column represented by param gene_id, rows are samples
+#' @param gene_id string in colnames(expr_df) relating to log2tpm data
 #'
-#' @param second the second  param, the type of data structure, format
+#' @param clin_df data.frame containing clinical data with unique columns represented by surv_event and surv_time, rows are samples
+#' @param surv_event colnames(clin_df) relating to survival event
+#' @param surv_time colnames(clin_df) relating to survival event
+#' @param join_el colname on which to join expression and survival data (default:rownames)
 #' @return output the output object data structure and what it contains
 #' @export
 
-run_rpart <- function(rpart_df, gene_col){
-  #CRABP2_values -> ?
-  #clinical_data -> ?
-}
+run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el = NULL){
 
-# regression tree analysis
-fit_tree <- rpart(OS ~ CRABP2_values, data= clinical_data, method="anova")
-fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised 
+  ##get survival event, time
+  surv_values <- clin_df[,c(surv_event, surv_time)]
+
+  if(is.null(join_el)){
+    expr_tb <- tibble::as_tibble(expr_df[,gene_id], rownames = "sample")
+  } else {
+    expr_tb <- tibble::as_tibble(expr_df[,c(join_el, gene_id)])
+    colnames(expr_tb)[colnames(expr_tb) == join_el] <- "sample"
+  }
+
+  ##make clin_df into same structutre and join on sample
+  #clin_tb defined
+
+  expr_os_tb <- left_join(expr_tb, clin_tb, by = "sample")
+
+  fit_tree <- rpart::rpart(OS ~ surv_event, data = expr_os_tb, method = "anova")
+
+  ##run rpart
+  rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
+  decision_values <- fit_tree$splits
+  cut_off <- decision_values[1,4]
+
+  high_low <- ifelse(CRABP2_values$`8330` >= cut_off,"High","Low")
+  clinical_data$CRABP2_Cohort <- as.vector(high_low)
+
+  return(clin_rp_tb)
+}
+##combine expr and surv
+rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
 decision_values <- fit_tree$splits
 cut_off <- decision_values[1,4]
 
