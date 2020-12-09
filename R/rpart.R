@@ -7,40 +7,39 @@
 #' @param clin_df data.frame containing clinical data with unique columns represented by surv_event and surv_time, rows are samples
 #' @param surv_event colnames(clin_df) relating to survival event
 #' @param surv_time colnames(clin_df) relating to survival event
-#' @param join_el colname on which to join expression and survival data (default:rownames)
+#' @param join_el colname on which to join expression and survival data (default: rownames)
 #' @return output the output object data structure and what it contains
 #' @export
 
 run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el = NULL){
 
-  ##get survival event, time
-  surv_values <- clin_df[,c(surv_event, surv_time)]
-
+  ##parse relevant columns from inputs
   if(is.null(join_el)){
     expr_tb <- tibble::as_tibble(expr_df[,gene_id], rownames = "sample")
+    surv_tb <- tibble::as_tibble(clin_df[,surv_event], rownames = "sample")
   } else {
     expr_tb <- tibble::as_tibble(expr_df[,c(join_el, gene_id)])
     colnames(expr_tb)[colnames(expr_tb) == join_el] <- "sample"
+    surv_tb <- tibble::as_tibble(clin_df[,c(join_el, surv_event)])
+    colnames(surv_tb)[colnames(surv_tb) == join_el] <- "sample"
   }
 
-  ##make clin_df into same structutre and join on sample
-
-
-  #clin_tb defined
-
-  expr_os_tb <- dplyr::left_join(expr_tb, clin_tb, by = "sample")
-
-  fit_tree <- rpart::rpart(OS ~ gene_id, data = expr_os_tb, method = "anova")
+  #join and fit-tree
+  surv_expr_tb <- dplyr::left_join(surv_tb, expr_tb, by = "sample")
+  colnames(surv_expr_tb) <- c("sample", "OS", "gene")
+  os_expr <- as.data.frame(surv_expr_tb[,c("OS", "gene")])
+  fit_tree <- rpart::rpart(os_expr, method = "anova")
 
   ##run rpart
-  rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
+  rattle::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
   decision_values <- fit_tree$splits
   cut_off <- decision_values[1,4]
 
-  high_low <- ifelse(expr_os_tb$gene_id >= cut_off,"High","Low")
-  clin_df$paste(gene_id,"_grouped") <- as.vector(high_low)
+  high_low <- ifelse(surv_expr_tb$gene >= cut_off, "High", "Low")
+  clin_tb <- dplyr::mutate(.data = clin_df, "{gene_id}_group" := high_low,
+                                            "{gene_id}_log2tpm" := as.numeric(os_expr$gene))
 
-  return(clin_df)
+  return(clin_tb)
 }
 
 result_df <- run_rpart(expr_df, "RARB", clin_df, "OS", "OS.time", "sample")
