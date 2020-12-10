@@ -1,5 +1,4 @@
-#' Run rpart
-#' this can be multi-line if we like
+#' Run rpart on a named gene, return clinical data with appended high/low based on cutoff
 #'
 #' @param expr_df data.frame containing expression in log2tpm with a unique column represented by param gene_id, rows are samples
 #' @param gene_id string in colnames(expr_df) relating to log2tpm data
@@ -8,7 +7,15 @@
 #' @param surv_event colnames(clin_df) relating to survival event
 #' @param surv_time colnames(clin_df) relating to survival event
 #' @param join_el colname on which to join expression and survival data (default: rownames)
-#' @return output the output object data structure and what it contains
+#'
+#' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm
+#'
+#' @examples
+#'
+#' expr_df <- readRDS(system.file("extdata", "expr_df.rds", package="rpartSurvivalClassifier"))
+#' clin_df <- readRDS(system.file("extdata", "clin_df.rds", package="rpartSurvivalClassifier"))
+#' clin_new_tb <- run_rpart(expr_df, "CRABP2", clin_df, "OS", "OS.time", "sample")
+#'
 #' @export
 
 run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el = NULL){
@@ -30,8 +37,11 @@ run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el 
   os_expr <- as.data.frame(surv_expr_tb[,c("OS", "gene")])
   fit_tree <- rpart::rpart(os_expr, method = "anova")
 
-  ##run rpart
-  rattle::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
+  # graph showing how patients are dichotomised
+  pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+    rattle::fancyRpartPlot(fit_tree)
+  dev.off()
+
   decision_values <- fit_tree$splits
   cut_off <- decision_values[1,4]
 
@@ -41,33 +51,3 @@ run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el 
 
   return(clin_tb)
 }
-
-result_df <- run_rpart(expr_df, "RARB", clin_df, "OS", "OS.time", "sample")
-
-
-
-
-##combine expr and surv
-rpart::fancyRpartPlot(fit_tree)  # graph showing how patients are dichotomised
-decision_values <- fit_tree$splits
-cut_off <- decision_values[1,4]
-
-# grouping patients into their high and low cohorts
-high_low <- ifelse(CRABP2_values$`8330` >= cut_off,"High","Low")
-clinical_data$CRABP2_Cohort <- as.vector(high_low)
-
-# Survival analysis using the Kaplan-Meier method for CRABP2
-surv_object <- Surv(time = clinical_data$OS.time, event = clinical_data$OS)
-fit1 <- survfit(surv_object ~ CRABP2_Cohort, data = clinical_data)
-survdiff(surv_object ~ CRABP2_Cohort, data = clinical_data)  #log rank test
-ggsurvplot(fit1, data = clinical_data, pval = TRUE,
-           legend = "bottom",
-           xlab = "Time(Days)",
-           ylab = "Survival Probability",
-           legend.title = "CRABP2 expression",
-           legend.labs = c("High Expression (n=60)", "Low Expression (n=468)"),
-           pval.size = 5,
-           font.legend = c(10, "plain", "black"))
-
-clin_df <- readRDS("inst/extdata/clin_df.rds")
-expr_df <- readRDS("inst/extdata/expr_df.rds")
