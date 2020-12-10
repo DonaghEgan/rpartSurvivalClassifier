@@ -9,14 +9,14 @@ run_surv_plot(clin_tb, gene_id, surv_event, surv_time)
 \arguments{
 \item{clin_tb}{tibbe created by run_rpart()}
 
-\item{gene_id}{string in colnames(expr_df) relating to log2tpm data}
+\item{gene_id}{string used in run_rpart to define gene used in classification}
 
-\item{surv_event}{colnames(clin_df) relating to survival event}
+\item{surv_event}{colnames(clin_tb) relating to survival event}
 
-\item{surv_time}{colnames(clin_df) relating to survival event}
+\item{surv_time}{colnames(clin_tb) relating to survival event}
 }
 \value{
-tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm
+table from survival::survdiff (log rank test)
 }
 \description{
 Run survival analysis and plot using rpart output from run_rpart()

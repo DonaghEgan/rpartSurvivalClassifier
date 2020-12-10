@@ -1,12 +1,11 @@
 #' Run survival analysis and plot using rpart output from run_rpart()
 #'
 #' @param clin_tb tibbe created by run_rpart()
-#' @param gene_id string in colnames(expr_df) relating to log2tpm data
+#' @param gene_id string used in run_rpart to define gene used in classification
+#' @param surv_event colnames(clin_tb) relating to survival event
+#' @param surv_time colnames(clin_tb) relating to survival event
 #'
-#' @param surv_event colnames(clin_df) relating to survival event
-#' @param surv_time colnames(clin_df) relating to survival event
-#'
-#' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm
+#' @return table from survival::survdiff (log rank test)
 #'
 #' @examples
 #'

@@ -8,7 +8,7 @@
 #' @param surv_time colnames(clin_df) relating to survival event
 #' @param join_el colname on which to join expression and survival data (default: rownames)
 #'
-#' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm
+#' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
 #'
 #' @examples
 #'
