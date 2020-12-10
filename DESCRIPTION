@@ -1,13 +1,16 @@
 Package: rpartSurvivalClassifier
-Title: What the Package Does (One Line, Title Case)
+Title: Separates patients into high and low expression groups for a given gene and compares their survival outcomes.
 Version: 0.0.0.9000
 Authors@R:
     person(given = "Donagh",
-           family = "Last",
+           family = "Egan",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "donagh.egan@ucdconnect.ie",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: Uses recursive partitioning and regression tree analysis to generate a log2tpm expression
+             cutoff value for a given gene. Based on this value, patients are grouped into either a high or low
+             expression group. The survival outcomes of these two groups is then compared using
+             kaplan meier curves.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8
