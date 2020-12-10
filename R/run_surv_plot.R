@@ -20,12 +20,10 @@ run_surv_plot <- function(clin_tb, gene_id, surv_event, surv_time){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
-  print(class(gene_id))
-  grouping <- paste0(gene_id, "_group")
-
-  fit1 <- survival::survfit(as.formula(paste0("surv_object ~ ", grouping)),
+  form1 <- paste0("surv_object ~ ", gene_id, "_group")
+  fit1 <- survival::survfit(form1,
                             data = clin_tb)
-  lrt <- survival::survdiff(as.formula(paste0("surv_object ~ ", grouping)),
+  lrt <- survival::survdiff(form1,
                             data = clin_tb)  #log rank test
   ntab <- table(clin_tb[paste0(gene_id, "_group")])
   ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
