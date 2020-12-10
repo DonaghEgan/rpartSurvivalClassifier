@@ -16,7 +16,7 @@ run_surv_plot(clin_tb, gene_id, surv_event, surv_time)
 \item{surv_time}{colnames(clin_tb) relating to survival event}
 }
 \value{
-table from survival::survdiff (log rank test)
+table from survival::survdiff (log rank test), ggsurvplot PDF printed
 }
 \description{
 Run survival analysis and plot using rpart output from run_rpart()
