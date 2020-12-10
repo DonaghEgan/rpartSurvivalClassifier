@@ -21,7 +21,8 @@ run_surv_plot <- function(clin_tb, gene_id, surv_event, surv_time){
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
   form1 <- paste0("surv_object ~ ", gene_id, "_group")
-  fit1 <- survival::survfit(form1,
+  form1<- as.formula(form1)
+  fit1 <- survminer::surv_fit(form1,
                             data = clin_tb)
   lrt <- survival::survdiff(form1,
                             data = clin_tb)  #log rank test
