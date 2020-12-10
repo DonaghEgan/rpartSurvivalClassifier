@@ -12,8 +12,8 @@
 #'
 #' expr_df <- readRDS(system.file("extdata", "expr_df.rds", package="rpartSurvivalClassifier"))
 #' clin_df <- readRDS(system.file("extdata", "clin_df.rds", package="rpartSurvivalClassifier"))
-#' clin_new_tb <- run_rpart(expr_df = expr_df, gene_id = "CRABP2", clin_df = clin_df, surv_event = "OS", surv_time = "OS.time", join_el = "sample")
-#' log_rank_res <- run_surv_plot(clin_tb = clin_new_tb, gene_id = "CRABP2", surv_event = "OS", surv_time = "OS.time")
+#' clin_new_tb <- rpartSurvivalClassifier::run_rpart(expr_df = expr_df, gene_id = "CRABP2", clin_df = clin_df, surv_event = "OS", surv_time = "OS.time", join_el = "sample")
+#' log_rank_res <- rpartSurvivalClassifier::run_surv_plot(clin_tb = clin_new_tb, gene_id = "CRABP2", surv_event = "OS", surv_time = "OS.time")
 #'
 #' @export
 
