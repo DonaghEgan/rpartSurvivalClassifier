@@ -1,9 +1,10 @@
 #' Run survival analysis and plot using rpart output from run_rpart()
 #'
-#' @param clin_tb tibbe created by run_rpart()
-#' @param gene_id string used in run_rpart to define gene used in classification
+#' @param clin_tb tibble created by run_rpart()
+#' @param gene_ids vector of strings used in run_rpart to define gene used in classification
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
+#' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
 #'
@@ -16,30 +17,42 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_id, surv_event, surv_time){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
-  form1 <- paste0("surv_object ~ ", gene_id, "_group")
-  form1<- as.formula(form1)
-  fit1 <- survminer::surv_fit(form1,
-                            data = clin_tb)
-  lrt <- survival::survdiff(form1,
-                            data = clin_tb)  #log rank test
-  ntab <- table(clin_tb[paste0(gene_id, "_group")])
-  ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
-                               pval = TRUE,
-                               legend = "bottom",
-                               xlab = surv_time,
-                               ylab = paste0(surv_event, " Probability"),
-                               legend.title = paste0(gene_id, " log2tpm: "),
-                               legend.labs = c(paste0("High Expression (n = ", ntab["High"], ")"), paste0("Low Expression (n = ", ntab["Low"], ")")),
-                               pval.size = 5,
-                               font.legend = c(10, "plain", "black"))
 
-  ##outputs
-  pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-    print(ggs)
-  dev.off()
-  return(lrt)
+  lapply(seq_along(gene_ids), function(x){
+    gene_id <- gene_ids[x]
+
+    if(paste0(gene_id, "_group") %in% colnames(clin_tb)){
+      form1 <- paste0("surv_object ~ ", gene_id, "_group")
+      form1<- as.formula(form1)
+      fit1 <- survminer::surv_fit(form1,
+                                data = clin_tb)
+      lrt <- survival::survdiff(form1,
+                                data = clin_tb)  #log rank test
+      ntab <- table(clin_tb[paste0(gene_id, "_group")])
+
+      if(is.null(col_palette)){
+        col_palette <- c("red", "dodgerblue")
+      }
+      ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
+                                   pval = TRUE,
+                                   legend = "bottom",
+                                   xlab = surv_time,
+                                   ylab = paste0(surv_event, " Probability"),
+                                   legend.title = paste0(gene_id, " log2tpm: "),
+                                   legend.labs = c(paste0("High Expression (n = ", ntab["High"], ")"), paste0("Low Expression (n = ", ntab["Low"], ")")),
+                                   pval.size = 5,
+                                   font.legend = c(10, "plain", "black"),
+                                   palette = col_palette)
+
+      ##outputs
+      pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        print(ggs)
+      dev.off()
+      return(lrt)
+    }
+  })
 }
