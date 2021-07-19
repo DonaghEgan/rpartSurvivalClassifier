@@ -33,9 +33,9 @@ run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el 
 
   #join and fit-tree
   surv_expr_tb <- dplyr::left_join(surv_tb, expr_tb, by = "sample")
-  colnames(surv_expr_tb) <- c("sample", "OS", "gene")
-  os_expr <- as.data.frame(surv_expr_tb[,c("OS", "gene")])
-  fit_tree <- rpart::rpart(os_expr, method = "anova")
+  colnames(surv_expr_tb) <- c("sample", surv_event, "gene")
+  s_expr <- as.data.frame(surv_expr_tb[,c(surv_event, "gene")])
+  fit_tree <- rpart::rpart(s_expr, method = "anova")
 
   # graph showing how patients are dichotomised
   pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
@@ -47,7 +47,7 @@ run_rpart <- function(expr_df, gene_id, clin_df, surv_event, surv_time, join_el 
 
   high_low <- ifelse(surv_expr_tb$gene >= cut_off, "High", "Low")
   clin_tb <- dplyr::mutate(.data = clin_df, "{gene_id}_group" := high_low,
-                                            "{gene_id}_log2tpm" := as.numeric(os_expr$gene))
+                                            "{gene_id}_log2tpm" := as.numeric(s_expr$gene))
 
   return(clin_tb)
 }
