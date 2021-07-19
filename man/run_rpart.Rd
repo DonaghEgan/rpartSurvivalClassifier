@@ -4,12 +4,12 @@
 \alias{run_rpart}
 \title{Run rpart on a named gene, return clinical data with appended high/low based on cutoff}
 \usage{
-run_rpart(expr_df, gene_id, clin_df, surv_event, surv_time, join_el = NULL)
+run_rpart(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL)
 }
 \arguments{
 \item{expr_df}{data.frame containing expression in log2tpm with a unique column represented by param gene_id, rows are samples}
 
-\item{gene_id}{string in colnames(expr_df) relating to log2tpm data}
+\item{gene_ids}{vector of strings in colnames(expr_df) relating to log2tpm data for one or more gene}
 
 \item{clin_df}{data.frame containing clinical data with unique columns represented by surv_event and surv_time, rows are samples}
 

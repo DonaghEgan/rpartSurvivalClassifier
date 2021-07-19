@@ -4,16 +4,18 @@
 \alias{run_surv_plot}
 \title{Run survival analysis and plot using rpart output from run_rpart()}
 \usage{
-run_surv_plot(clin_tb, gene_id, surv_event, surv_time)
+run_surv_plot(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL)
 }
 \arguments{
-\item{clin_tb}{tibbe created by run_rpart()}
+\item{clin_tb}{tibble created by run_rpart()}
 
-\item{gene_id}{string used in run_rpart to define gene used in classification}
+\item{gene_ids}{vector of strings used in run_rpart to define gene used in classification}
 
 \item{surv_event}{colnames(clin_tb) relating to survival event}
 
 \item{surv_time}{colnames(clin_tb) relating to survival event}
+
+\item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed
