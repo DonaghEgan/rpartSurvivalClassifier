@@ -26,6 +26,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
     gene_id <- gene_ids[x]
 
     if(paste0(gene_id, "_group") %in% colnames(clin_tb)){
+      print(paste0("Data available for: ", gene_id))
       form1 <- paste0("surv_object ~ ", gene_id, "_group")
       form1<- as.formula(form1)
       fit1 <- survminer::surv_fit(form1,
@@ -53,6 +54,8 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
         print(ggs)
       dev.off()
       return(lrt)
+    } else {
+      print(paste0("Data not available for: ", gene_id))
     }
   })
   names(gene_lrts) <- gene_ids
