@@ -4,7 +4,14 @@
 \alias{run_surv_plot}
 \title{Run survival analysis and plot using rpart output from run_rpart()}
 \usage{
-run_surv_plot(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL)
+run_surv_plot(
+  clin_tb,
+  gene_ids,
+  surv_event,
+  surv_time,
+  col_palette = NULL,
+  print_pdf = NULL
+)
 }
 \arguments{
 \item{clin_tb}{tibble created by run_rpart()}
@@ -16,6 +23,8 @@ run_surv_plot(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL)
 \item{surv_time}{colnames(clin_tb) relating to survival event}
 
 \item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
+
+\item{print_pdf}{print PDF to file (else return in output list)}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed

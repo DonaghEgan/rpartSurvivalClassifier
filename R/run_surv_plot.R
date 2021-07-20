@@ -5,6 +5,8 @@
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
+#' @param print_pdf print PDF to file (else return in output list)
+
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
 #'
@@ -17,7 +19,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL, print_pdf = NULL){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
@@ -50,10 +52,12 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
                                    palette = col_palette)
 
       ##outputs
-      pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-        print(ggs)
-      dev.off()
-      return(lrt)
+      if(!is.null(print_pdf)){
+        pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+          print(ggs)
+        dev.off()
+      }
+      return(list(ggs, lrt))
     } else {
       print(paste0("Data not available for: ", gene_id))
     }
