@@ -22,7 +22,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
 
-  lapply(seq_along(gene_ids), function(x){
+  gene_lrts <- lapply(seq_along(gene_ids), function(x){
     gene_id <- gene_ids[x]
 
     if(paste0(gene_id, "_group") %in% colnames(clin_tb)){
@@ -55,4 +55,6 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
       return(lrt)
     }
   })
+  names(gene_lrts) <- gene_ids
+  return(gene_lrts)
 }
