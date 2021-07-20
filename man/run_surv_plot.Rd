@@ -10,7 +10,8 @@ run_surv_plot(
   surv_event,
   surv_time,
   col_palette = NULL,
-  print_pdf = NULL
+  print_pdf = NULL,
+  title_text = ""
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ run_surv_plot(
 \item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
 
 \item{print_pdf}{print PDF to file (else return in output list)}
+
+\item{title_text}{title text for plot}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed
