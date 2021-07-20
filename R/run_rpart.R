@@ -68,7 +68,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
   ##remove NULL
   rpart_tb_list <- rpart_tb_list[!sapply(rpart_tb_list, is.null)]
 
-  if(!is.null(dim(rpart_tb_list))){
+  if(length(rpart_tb_list)>0){
     rpart_tb <- rpart_tb_list %>% purrr::reduce(dplyr::left_join) %>%
                                   dplyr::left_join(., clin_df)
 
