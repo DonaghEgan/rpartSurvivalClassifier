@@ -37,6 +37,10 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
 
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
+  plot_catch <- function(fit_tree){
+    rattle::fancyRpartPlot(fit_tree)
+  }
+
   rpart_tb_list <- lapply(seq_along(gene_ids), function(x){
     gene_id <- gene_ids[x]
     print(paste0("Working on: ", gene_id))
@@ -53,6 +57,8 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
         dev.off()
       }
 
+      fit_tree_plot <- function(){plot_catch(fit_tree)}
+
       decision_values <- fit_tree$splits
       cut_off <- decision_values[1,4]
 
@@ -62,7 +68,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
                                "{gene_id}_log2tpm" := as.numeric(unlist(s_expr[gene_id]))) %>%
                  dplyr::select(patient, barcode,
                                tidyselect::starts_with(!!as.vector(gene_id)))
-     return(gene_tb)
+     return(list(fit_tree_plot, gene_tb))
     }
   })
 
