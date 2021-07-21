@@ -52,7 +52,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
                                    pval.size = 5,
                                    font.legend = c(10, "plain", "black"),
                                    palette = col_palette,
-                                   title = title_text)
+                                   title = paste0(title_text, " - ", gene_id))
 
       ##outputs
       if(!is.null(print_pdf)){
