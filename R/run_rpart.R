@@ -38,7 +38,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
   plot_catch <- function(fit_tree){
-    rattle::fancyRpartPlot(fit_tree)
+    rattle::fancyRpartPlot(fit_tree, main = paste0("rpart ", gene_id, " - ", surv_event))
   }
 
   rpart_tb_list <- lapply(seq_along(gene_ids), function(x){
