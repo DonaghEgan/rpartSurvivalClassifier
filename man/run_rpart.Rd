@@ -18,6 +18,8 @@ run_rpart(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL)
 \item{surv_time}{colnames(clin_df) relating to survival event}
 
 \item{join_el}{colname on which to join expression and survival data (default: rownames)}
+
+\item{print_pdf}{print PDF to file (else return in output list)}
 }
 \value{
 tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed

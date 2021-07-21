@@ -7,6 +7,7 @@
 #' @param surv_event colnames(clin_df) relating to survival event
 #' @param surv_time colnames(clin_df) relating to survival event
 #' @param join_el colname on which to join expression and survival data (default: rownames)
+#' @param print_pdf print PDF to file (else return in output list)
 #'
 #' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
 #'
@@ -46,9 +47,11 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
       return(NULL)
     } else {
     # graph showing how patients are dichotomised
-      pdf(paste0("rpart_", x, "_", surv_event, ".pdf"), onefile = FALSE)
-        rattle::fancyRpartPlot(fit_tree)
-      dev.off()
+      if(!is.null(print_pdf)){
+        pdf(paste0("rpart_", x, "_", surv_event, ".pdf"), onefile = FALSE)
+          rattle::fancyRpartPlot(fit_tree)
+        dev.off()
+      }
 
       decision_values <- fit_tree$splits
       cut_off <- decision_values[1,4]
@@ -56,7 +59,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
       high_low <- ifelse(unlist(surv_expr_tb[gene_id]) >= cut_off, "High", "Low")
       gene_tb <- dplyr::mutate(.data = clin_df[],
                                "{gene_id}_group" := high_low,
-                               "{gene_id}_log2tpm" := as.numeric(unlist(s_expr[x]))) %>%
+                               "{gene_id}_log2tpm" := as.numeric(unlist(s_expr[gene_id]))) %>%
                  dplyr::select(patient, barcode,
                                tidyselect::starts_with(!!as.vector(gene_id)))
      return(gene_tb)
