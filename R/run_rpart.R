@@ -19,7 +19,7 @@
 #'
 #' @export
 
-run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL){
+run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL){
 
   ##parse relevant columns from inputs
   if(is.null(join_el)){
