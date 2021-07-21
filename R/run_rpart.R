@@ -72,15 +72,22 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     }
   })
 
-  names(rpart_tb_list) <- gene_ids
+  ##split plots and gene_tbs
+  rpart_plot_list <- lapply(rpart_tb_list, function(f){
+      return(f[[1]])
+    })
+  rpart_gene_list <- lapply(rpart_tb_list, function(f){
+      return(f[[2]])
+    })
+  names(rpart_gene_list) <- gene_ids
 
   ##remove NULL
-  rpart_tb_list <- rpart_tb_list[!sapply(rpart_tb_list, is.null)]
+  rpart_gene_list <- rpart_gene_list[!sapply(rpart_gene_list, is.null)]
 
-  if(length(rpart_tb_list)>0){
-    rpart_tb <- rpart_tb_list %>% purrr::reduce(dplyr::left_join) %>%
+  if(length(rpart_gene_list)>0){
+    rpart_tb <- rpart_gene_list %>% purrr::reduce(dplyr::left_join) %>%
                                   dplyr::left_join(., clin_df)
 
-    return(rpart_tb)
+    return(list(rpart_tb, rpart_plot_list))
   }
 }
