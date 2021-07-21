@@ -37,7 +37,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
 
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
-  plot_catch <- function(fit_tree){
+  plot_catch <- function(fit_tree, gene_id, surv_event){
     rattle::fancyRpartPlot(fit_tree, main = paste0("rpart ", gene_id, " - ", surv_event))
   }
 
@@ -57,7 +57,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
         dev.off()
       }
 
-      fit_tree_plot <- function(){plot_catch(fit_tree)}
+      fit_tree_plot <- function(){plot_catch(fit_tree, gene_id, surv_event)}
 
       decision_values <- fit_tree$splits
       cut_off <- decision_values[1,4]
