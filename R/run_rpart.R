@@ -38,7 +38,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
   plot_catch <- function(fit_tree, gene_id, surv_event){
-    rattle::fancyRpartPlot(fit_tree, main = gene_id, sub = surv_event)
+    rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event))
   }
 
   rpart_tb_list <- lapply(seq_along(gene_ids), function(x){
@@ -53,7 +53,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
         pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-          rattle::fancyRpartPlot(fit_tree, main = gene_id, sub = surv_event)
+          rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event)))
         dev.off()
       }
 
