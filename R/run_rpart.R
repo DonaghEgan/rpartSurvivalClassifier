@@ -53,7 +53,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
         pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-          rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event)))
+          rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event))
         dev.off()
       }
 
