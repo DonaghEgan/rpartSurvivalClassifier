@@ -5,6 +5,9 @@
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
+#' @param print_pdf print PDF to file (else return in output list)
+#' @param title_text title text for plot
+
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
 #'
@@ -17,15 +20,16 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL, print_pdf = NULL, title_text = ""){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
 
-  lapply(seq_along(gene_ids), function(x){
+  gene_lrts <- lapply(seq_along(gene_ids), function(x){
     gene_id <- gene_ids[x]
 
     if(paste0(gene_id, "_group") %in% colnames(clin_tb)){
+      print(paste0("Data available for: ", gene_id))
       form1 <- paste0("surv_object ~ ", gene_id, "_group")
       form1<- as.formula(form1)
       fit1 <- survminer::surv_fit(form1,
@@ -37,6 +41,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
       if(is.null(col_palette)){
         col_palette <- c("red", "dodgerblue")
       }
+
       ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
                                    pval = TRUE,
                                    legend = "bottom",
@@ -46,13 +51,20 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
                                    legend.labs = c(paste0("High Expression (n = ", ntab["High"], ")"), paste0("Low Expression (n = ", ntab["Low"], ")")),
                                    pval.size = 5,
                                    font.legend = c(10, "plain", "black"),
-                                   palette = col_palette)
+                                   palette = col_palette,
+                                   title = paste0(title_text, " - ", gene_id))
 
       ##outputs
-      pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-        print(ggs)
-      dev.off()
-      return(lrt)
+      if(!is.null(print_pdf)){
+        pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+          print(ggs)
+        dev.off()
+      }
+      return(list(ggs, lrt))
+    } else {
+      print(paste0("Data not available for: ", gene_id))
     }
   })
+  names(gene_lrts) <- gene_ids
+  return(gene_lrts)
 }
