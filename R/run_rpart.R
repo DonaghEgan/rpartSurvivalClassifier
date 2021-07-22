@@ -8,6 +8,7 @@
 #' @param surv_time colnames(clin_df) relating to survival event
 #' @param join_el colname on which to join expression and survival data (default: rownames)
 #' @param print_pdf print PDF to file (else return in output list)
+#' @param title_text title text for plot
 #'
 #' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
 #'
@@ -19,7 +20,7 @@
 #'
 #' @export
 
-run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL){
+run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, title_text = NULL){
 
   ##parse relevant columns from inputs
   if(is.null(join_el)){
@@ -37,8 +38,14 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
 
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
-  plot_catch <- function(fit_tree, gene_id, surv_event){
-    rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event))
+  if(is.null(title_text)){
+    title_text = ""
+  } else {
+    title_text <- paste0(title_text, " - ")
+  }
+
+  plot_catch <- function(fit_tree, gene_id, surv_event, title_text){
+    rattle::fancyRpartPlot(fit_tree, main = paste0(title_text, gene_id, " - ", surv_event))
   }
 
   rpart_tb_list <- lapply(seq_along(gene_ids), function(x){
@@ -53,11 +60,11 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
         pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
-          rattle::fancyRpartPlot(fit_tree, main = paste0(gene_id, " - ", surv_event))
+          rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }
 
-      fit_tree_plot <- function(){plot_catch(fit_tree, gene_id, surv_event)}
+      fit_tree_plot <- function(){plot_catch(fit_tree, gene_id, surv_event, title_text)}
 
       decision_values <- fit_tree$splits
       cut_off <- decision_values[1,4]
