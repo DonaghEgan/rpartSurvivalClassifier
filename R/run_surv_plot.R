@@ -1,9 +1,10 @@
 #' Run survival analysis and plot using rpart output from run_rpart()
 #'
-#' @param clin_tb tibble created by run_rpart()
+#' @param clin_tb tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids[1]}_group' and {surv_event, surv_time} as below
 #' @param gene_ids vector of strings used in run_rpart to define gene used in classification
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
+#' @param expr_unit unit of expression in clin_tb; default - log2tpm
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
 #' @param print_pdf print PDF to file (else return in output list)
 #' @param title_text title text for plot
@@ -20,7 +21,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette = NULL, print_pdf = NULL, title_text = ""){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", col_palette = NULL, print_pdf = NULL, title_text = ""){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
@@ -47,7 +48,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, col_palette 
                                    legend = "bottom",
                                    xlab = surv_time,
                                    ylab = paste0(surv_event, " Probability"),
-                                   legend.title = paste0(gene_id, " log2tpm: "),
+                                   legend.title = paste0(gene_id, " ", expr_unit, ": "),
                                    legend.labs = c(paste0("High Expression (n = ", ntab["High"], ")"), paste0("Low Expression (n = ", ntab["Low"], ")")),
                                    pval.size = 5,
                                    font.legend = c(10, "plain", "black"),
