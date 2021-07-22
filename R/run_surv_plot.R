@@ -8,6 +8,7 @@
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
 #' @param print_pdf print PDF to file (else return in output list)
 #' @param title_text title text for plot
+#' @param sub_text sub text for plot
 
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
@@ -21,7 +22,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", col_palette = NULL, print_pdf = NULL, title_text = ""){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", col_palette = NULL, print_pdf = NULL, title_text = "", sub_text = ""){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))

@@ -9,13 +9,15 @@ run_surv_plot(
   gene_ids,
   surv_event,
   surv_time,
+  expr_unit = "log2tpm",
   col_palette = NULL,
   print_pdf = NULL,
-  title_text = ""
+  title_text = "",
+  sub_text = ""
 )
 }
 \arguments{
-\item{clin_tb}{tibble created by run_rpart()}
+\item{clin_tb}{tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids\link{1}}_group' and {surv_event, surv_time} as below}
 
 \item{gene_ids}{vector of strings used in run_rpart to define gene used in classification}
 
@@ -23,11 +25,15 @@ run_surv_plot(
 
 \item{surv_time}{colnames(clin_tb) relating to survival event}
 
+\item{expr_unit}{unit of expression in clin_tb; default - log2tpm}
+
 \item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
 
 \item{print_pdf}{print PDF to file (else return in output list)}
 
 \item{title_text}{title text for plot}
+
+\item{sub_text}{sub text for plot}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed
