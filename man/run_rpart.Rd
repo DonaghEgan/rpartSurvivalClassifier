@@ -4,7 +4,16 @@
 \alias{run_rpart}
 \title{Run rpart on a named gene, return clinical data with appended high/low based on cutoff}
 \usage{
-run_rpart(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL)
+run_rpart(
+  expr_df,
+  gene_ids,
+  clin_df,
+  surv_event,
+  surv_time,
+  join_el = NULL,
+  print_pdf = NULL,
+  title_text = NULL
+)
 }
 \arguments{
 \item{expr_df}{data.frame containing expression in log2tpm with a unique column represented by param gene_id, rows are samples}
@@ -20,6 +29,8 @@ run_rpart(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL)
 \item{join_el}{colname on which to join expression and survival data (default: rownames)}
 
 \item{print_pdf}{print PDF to file (else return in output list)}
+
+\item{title_text}{title text for plot}
 }
 \value{
 tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
