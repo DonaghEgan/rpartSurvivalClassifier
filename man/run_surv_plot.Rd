@@ -10,6 +10,7 @@ run_surv_plot(
   surv_event,
   surv_time,
   expr_unit = "log2tpm",
+  group_name = "_group",
   col_palette = NULL,
   print_pdf = NULL,
   title_text = "",
@@ -17,7 +18,7 @@ run_surv_plot(
 )
 }
 \arguments{
-\item{clin_tb}{tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids\link{1}}_group' and {surv_event, surv_time} as below}
+\item{clin_tb}{tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids\link{1}}_{group_name}' and {surv_event, surv_time} as below}
 
 \item{gene_ids}{vector of strings used in run_rpart to define gene used in classification}
 
@@ -26,6 +27,8 @@ run_surv_plot(
 \item{surv_time}{colnames(clin_tb) relating to survival event}
 
 \item{expr_unit}{unit of expression in clin_tb; default - log2tpm}
+
+\item{group_name}{character string of the 'group_name' column, therefore the gene_id concatenated with _{group_name} suffix; default: group}
 
 \item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
 

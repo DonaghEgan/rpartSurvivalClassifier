@@ -33,7 +33,7 @@ run_rpart(
 \item{title_text}{title text for plot}
 }
 \value{
-tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
+list containing: [\link{1}] tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm; [\link{2}] named list of rpart plots by gene_ids
 }
 \description{
 Run rpart on a named gene, return clinical data with appended high/low based on cutoff

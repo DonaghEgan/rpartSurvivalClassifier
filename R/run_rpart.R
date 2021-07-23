@@ -10,7 +10,7 @@
 #' @param print_pdf print PDF to file (else return in output list)
 #' @param title_text title text for plot
 #'
-#' @return tibble of clin_df with two columns appended, 'gene_id'_group, 'gene_id'_log2tpm; rpart PDF printed
+#' @return list containing: [[1]] tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm; [[2]] named list of rpart plots by gene_ids
 #'
 #' @examples
 #'
@@ -71,13 +71,15 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
 
       high_low <- ifelse(unlist(surv_expr_tb[gene_id]) >= cut_off, "High", "Low")
       gene_tb <- dplyr::mutate(.data = clin_df[],
-                               "{gene_id}_group" := high_low,
+                               "{gene_id}_rpart_group" := high_low,
                                "{gene_id}_log2tpm" := as.numeric(unlist(s_expr[gene_id]))) %>%
                  dplyr::select(patient, barcode,
                                tidyselect::starts_with(!!as.vector(gene_id)))
      return(list(fit_tree_plot, gene_tb))
     }
   })
+
+  names(rpart_tb_list) <- gene_ids
 
   ##split plots and gene_tbs
   rpart_plot_list <- lapply(rpart_tb_list, function(f){
@@ -86,15 +88,15 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
   rpart_gene_list <- lapply(rpart_tb_list, function(f){
       return(f[[2]])
     })
-  names(rpart_gene_list) <- gene_ids
 
   ##remove NULL
+  rpart_plot_list <- rpart_plot_list[!sapply(rpart_plot_list, is.null)]
   rpart_gene_list <- rpart_gene_list[!sapply(rpart_gene_list, is.null)]
 
   if(length(rpart_gene_list)>0){
     rpart_tb <- rpart_gene_list %>% purrr::reduce(dplyr::left_join) %>%
                                   dplyr::left_join(., clin_df)
 
-    return(list(rpart_tb, rpart_plot_list))
+    return(list(rpart_tb = rpart_tb, rpart_split_plot_list = rpart_plot_list))
   }
 }

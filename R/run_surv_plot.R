@@ -1,9 +1,10 @@
 #' Run survival analysis and plot using rpart output from run_rpart()
 #'
-#' @param clin_tb tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids[1]}_group' and {surv_event, surv_time} as below
+#' @param clin_tb tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids[1]}_{group_name}' and {surv_event, surv_time} as below
 #' @param gene_ids vector of strings used in run_rpart to define gene used in classification
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
+#' @param group_name character string of the 'group_name' column, therefore the gene_id concatenated with _{group_name} suffix; default: group
 #' @param expr_unit unit of expression in clin_tb; default - log2tpm
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
 #' @param print_pdf print PDF to file (else return in output list)
@@ -22,7 +23,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", col_palette = NULL, print_pdf = NULL, title_text = "", sub_text = ""){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, title_text = "", sub_text = ""){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
@@ -30,15 +31,15 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
   gene_lrts <- lapply(seq_along(gene_ids), function(x){
     gene_id <- gene_ids[x]
 
-    if(paste0(gene_id, "_group") %in% colnames(clin_tb)){
+    if(paste0(gene_id, group_name) %in% colnames(clin_tb)){
       print(paste0("Data available for: ", gene_id))
-      form1 <- paste0("surv_object ~ ", gene_id, "_group")
+      form1 <- paste0("surv_object ~ ", gene_id, group_name)
       form1<- as.formula(form1)
       fit1 <- survminer::surv_fit(form1,
                                 data = clin_tb)
       lrt <- survival::survdiff(form1,
                                 data = clin_tb)  #log rank test
-      ntab <- table(clin_tb[paste0(gene_id, "_group")])
+      ntab <- table(clin_tb[paste0(gene_id, group_name)])
 
       if(is.null(col_palette)){
         col_palette <- c("red", "dodgerblue")
@@ -62,7 +63,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
           print(ggs)
         dev.off()
       }
-      return(list(ggs, lrt))
+      return(list(ggplot = ggs, log_rank_test = lrt))
     } else {
       print(paste0("Data not available for: ", gene_id))
     }
