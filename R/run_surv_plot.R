@@ -47,7 +47,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
       }
 
       ##naming for plot and output
-      if(!is.null(names(gene_ids)){
+      if(!is.null(names(gene_ids))){
         gene_id <- paste0(gene_id, "_", names(gene_ids[x]))
       }
 
