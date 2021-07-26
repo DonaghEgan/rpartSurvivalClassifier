@@ -29,7 +29,12 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                 event = unlist(clin_tb[,surv_event]))
 
   gene_lrts <- lapply(seq_along(gene_ids), function(x){
+
     gene_id <- gene_ids[x]
+    ##include names if named vector
+    if(!is.null(names(gene_ids))){
+      gene_id <- paste(gene_id, names(gene_ids[x], sep = "_"))
+    }
 
     if(paste0(gene_id, group_name) %in% colnames(clin_tb)){
       print(paste0("Data available for: ", gene_id))
@@ -44,11 +49,6 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
       ##colouring
       if(is.null(col_palette)){
         col_palette <- c("red", "dodgerblue")
-      }
-
-      ##naming for plot and output
-      if(!is.null(names(gene_ids))){
-        gene_id <- paste0(gene_id, "_", names(gene_ids[x]))
       }
 
       ggs <- survminer::ggsurvplot(fit1, data = clin_tb,

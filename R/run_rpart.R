@@ -38,6 +38,14 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
 
   colnames(surv_expr_tb)[1:2] <- c("sample", surv_event)
 
+  ##name on names(gene_ids)
+  if(!is.null(names(gene_ids))){
+    col3p <- colnames(surv_expr_tb)[3:length(colnames(surv_expr_tb))]
+    colad <- paste(col3p, names(gene_ids), sep = "_")
+    colnames(surv_expr_tb)[3:length(colnames(surv_expr_tb))] <- colad
+    gene_ids <- colad
+  }
+
   if(is.null(title_text)){
     title_text = ""
   } else {
