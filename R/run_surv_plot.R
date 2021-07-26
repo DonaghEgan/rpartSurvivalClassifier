@@ -33,7 +33,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
     gene_id <- gene_ids[x]
     ##include names if named vector
     if(!is.null(names(gene_ids))){
-      gene_id <- paste(gene_id, names(gene_ids[x], sep = "_"))
+      gene_id <- paste(gene_id, names(gene_ids)[x], sep = "_")
     }
 
     if(paste0(gene_id, group_name) %in% colnames(clin_tb)){
