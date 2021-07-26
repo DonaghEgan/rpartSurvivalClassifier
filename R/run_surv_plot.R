@@ -1,7 +1,7 @@
 #' Run survival analysis and plot using rpart output from run_rpart()
 #'
 #' @param clin_tb tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids[1]}_{group_name}' and {surv_event, surv_time} as below
-#' @param gene_ids vector of strings used in run_rpart to define gene used in classification
+#' @param gene_ids vector of strings used in run_rpart to define gene used in classification; if named vector, uses names and ids for plotting
 #' @param surv_event colnames(clin_tb) relating to survival event
 #' @param surv_time colnames(clin_tb) relating to survival event
 #' @param group_name character string of the 'group_name' column, therefore the gene_id concatenated with _{group_name} suffix; default: group
@@ -41,8 +41,14 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                 data = clin_tb)  #log rank test
       ntab <- table(clin_tb[paste0(gene_id, group_name)])
 
+      ##colouring
       if(is.null(col_palette)){
         col_palette <- c("red", "dodgerblue")
+      }
+
+      ##naming for plot and output
+      if(!is.null(names(gene_ids)){
+        gene_id <- paste0(gene_id, "_", names(gene_ids[x]))
       }
 
       ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
