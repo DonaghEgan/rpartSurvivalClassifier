@@ -74,6 +74,11 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
       print(paste0("Data not available for: ", gene_id))
     }
   })
+
+  if(!is.null(names(gene_ids))){
+    gene_ids <- paste(gene_ids, names(gene_ids), sep = "_")
+  }
+
   names(gene_lrts) <- gene_ids
   return(gene_lrts)
 }
