@@ -7,10 +7,11 @@
 #' @param surv_event colnames(clin_df) relating to survival event
 #' @param surv_time colnames(clin_df) relating to survival event
 #' @param join_el colname on which to join expression and survival data (default: rownames)
-#' @param print_pdf print PDF to file (else return in output list)
+#' @param print_pdf output path of PDF
+#' @param print_png output path of PNG
 #' @param title_text title text for plot
 #'
-#' @return list containing: [[1]] tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm; [[2]] named list of rpart plots by gene_ids
+#' @return tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm
 #'
 #' @examples
 #'
@@ -20,7 +21,7 @@
 #'
 #' @export
 
-run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, title_text = NULL){
+run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, print_png = NULL, title_text = NULL){
 
   ##parse relevant columns from inputs
   if(is.null(join_el)){
@@ -56,7 +57,7 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     rattle::fancyRpartPlot(fit_tree, main = paste0(title_text, gene_id, " - ", surv_event))
   }
 
-  rpart_tb_list <- lapply(seq_along(gene_ids), function(x){
+  rpart_gene_list <- lapply(seq_along(gene_ids), function(x){
     gene_id <- gene_ids[x]
     print(paste0("Working on: ", gene_id))
     s_expr <- as.data.frame(surv_expr_tb[,c(surv_event, gene_id)])
@@ -67,7 +68,13 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     } else {
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
-        pdf(paste0("rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        pdf(paste0(print_pdf, "rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+          rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
+        dev.off()
+      }
+
+      if(!is.null(print_png)){
+        png(paste0(print_png, "/rpart_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
           rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }
@@ -83,28 +90,19 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
                                "{gene_id}_log2tpm" := as.numeric(unlist(s_expr[gene_id]))) %>%
                  dplyr::select(patient, barcode,
                                tidyselect::starts_with(!!as.vector(gene_id)))
-     return(list(fit_tree_plot, gene_tb))
+     return(gene_tb)
     }
   })
 
-  names(rpart_tb_list) <- gene_ids
-
-  ##split plots and gene_tbs
-  rpart_plot_list <- lapply(rpart_tb_list, function(f){
-      return(f[[1]])
-    })
-  rpart_gene_list <- lapply(rpart_tb_list, function(f){
-      return(f[[2]])
-    })
+  names(rpart_gene_list) <- gene_ids
 
   ##remove NULL
-  rpart_plot_list <- rpart_plot_list[!sapply(rpart_plot_list, is.null)]
   rpart_gene_list <- rpart_gene_list[!sapply(rpart_gene_list, is.null)]
 
   if(length(rpart_gene_list)>0){
     rpart_tb <- rpart_gene_list %>% purrr::reduce(dplyr::left_join) %>%
-                                  dplyr::left_join(., clin_df)
+                                    dplyr::left_join(., clin_df)
 
-    return(list(rpart_tb = rpart_tb, rpart_split_plot_list = rpart_plot_list))
+    return(rpart_tb = rpart_tb)
   }
 }

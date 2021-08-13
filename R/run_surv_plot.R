@@ -65,11 +65,16 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
 
       ##outputs
       if(!is.null(print_pdf)){
-        pdf(paste0("ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        pdf(paste0(print_pdf, "/ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
           print(ggs)
         dev.off()
       }
-      return(list(ggplot = ggs, log_rank_test = lrt))
+      if(!is.null(print_png)){
+        png(paste0(print_png, "/ggsurvplot_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
+          print(ggs)
+        dev.off()
+      }
+      return(log_rank_test = lrt)
     } else {
       print(paste0("Data not available for: ", gene_id))
     }
