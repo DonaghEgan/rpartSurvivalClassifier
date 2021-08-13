@@ -20,7 +20,7 @@ run_surv_plot(
 \arguments{
 \item{clin_tb}{tibble created by run_rpart(), or a tibble containing a columns named '{gene_ids\link{1}}_{group_name}' and {surv_event, surv_time} as below}
 
-\item{gene_ids}{vector of strings used in run_rpart to define gene used in classification}
+\item{gene_ids}{vector of strings used in run_rpart to define gene used in classification; if named vector, uses names and ids for plotting}
 
 \item{surv_event}{colnames(clin_tb) relating to survival event}
 

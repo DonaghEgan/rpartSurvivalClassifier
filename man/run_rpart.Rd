@@ -12,6 +12,7 @@ run_rpart(
   surv_time,
   join_el = NULL,
   print_pdf = NULL,
+  print_png = NULL,
   title_text = NULL
 )
 }
@@ -28,12 +29,14 @@ run_rpart(
 
 \item{join_el}{colname on which to join expression and survival data (default: rownames)}
 
-\item{print_pdf}{print PDF to file (else return in output list)}
+\item{print_pdf}{output path of PDF}
+
+\item{print_png}{output path of PNG}
 
 \item{title_text}{title text for plot}
 }
 \value{
-list containing: [\link{1}] tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm; [\link{2}] named list of rpart plots by gene_ids
+tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm
 }
 \description{
 Run rpart on a named gene, return clinical data with appended high/low based on cutoff
