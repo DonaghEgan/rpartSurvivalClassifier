@@ -13,6 +13,7 @@ run_surv_plot(
   group_name = "_group",
   col_palette = NULL,
   print_pdf = NULL,
+  print_png = NULL,
   title_text = "",
   sub_text = ""
 )
@@ -33,6 +34,8 @@ run_surv_plot(
 \item{col_palette}{colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)}
 
 \item{print_pdf}{print PDF to file (else return in output list)}
+
+\item{print_png}{print PDF to file (else return in output list)}
 
 \item{title_text}{title text for plot}
 

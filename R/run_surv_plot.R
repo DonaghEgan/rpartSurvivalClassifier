@@ -8,6 +8,7 @@
 #' @param expr_unit unit of expression in clin_tb; default - log2tpm
 #' @param col_palette colours to use in plotting (vector, high -> low expression; think palette in ggsurvplot is alphanum sorted...)
 #' @param print_pdf print PDF to file (else return in output list)
+#' @param print_png print PDF to file (else return in output list)
 #' @param title_text title text for plot
 #' @param sub_text sub text for plot
 
@@ -23,7 +24,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, title_text = "", sub_text = ""){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = ""){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
