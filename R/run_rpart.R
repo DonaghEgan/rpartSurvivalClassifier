@@ -10,6 +10,7 @@
 #' @param print_pdf output path of PDF
 #' @param print_png output path of PNG
 #' @param title_text title text for plot
+#' @param plot_prefix prefix for plot filename
 #'
 #' @return tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm
 #'
@@ -21,7 +22,7 @@
 #'
 #' @export
 
-run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, print_png = NULL, title_text = NULL){
+run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, print_png = NULL, title_text = NULL, plot_prefix = NULL){
 
   ##parse relevant columns from inputs
   if(is.null(join_el)){
@@ -68,13 +69,13 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     } else {
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
-        pdf(paste0(print_pdf, "rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        pdf(paste0(print_pdf, "/", plot_prefix, ".rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
           rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }
 
       if(!is.null(print_png)){
-        png(paste0(print_png, "/rpart_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
+        png(paste0(print_png, "/", plot_prefix, ".rpart_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
           rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }

@@ -13,7 +13,8 @@ run_rpart(
   join_el = NULL,
   print_pdf = NULL,
   print_png = NULL,
-  title_text = NULL
+  title_text = NULL,
+  plot_prefix = NULL
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ run_rpart(
 \item{print_png}{output path of PNG}
 
 \item{title_text}{title text for plot}
+
+\item{plot_prefix}{prefix for plot filename}
 }
 \value{
 tibble of clin_df with columns appended: 'gene_id'_group, 'gene_id'_log2tpm

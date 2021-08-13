@@ -15,7 +15,8 @@ run_surv_plot(
   print_pdf = NULL,
   print_png = NULL,
   title_text = "",
-  sub_text = ""
+  sub_text = "",
+  plot_prefix = NULL
 )
 }
 \arguments{
@@ -40,6 +41,8 @@ run_surv_plot(
 \item{title_text}{title text for plot}
 
 \item{sub_text}{sub text for plot}
+
+\item{plot_prefix}{prefix for plot filename}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed

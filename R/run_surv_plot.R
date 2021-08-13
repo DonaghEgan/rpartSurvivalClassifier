@@ -11,6 +11,7 @@
 #' @param print_png print PDF to file (else return in output list)
 #' @param title_text title text for plot
 #' @param sub_text sub text for plot
+#' @param plot_prefix prefix for plot filename
 
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
@@ -24,7 +25,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = ""){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = "", plot_prefix = NULL){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
@@ -66,12 +67,12 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
 
       ##outputs
       if(!is.null(print_pdf)){
-        pdf(paste0(print_pdf, "/ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        pdf(paste0(print_pdf, "/", plot_prefix, ".ggsurvplot_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
           print(ggs)
         dev.off()
       }
       if(!is.null(print_png)){
-        png(paste0(print_png, "/ggsurvplot_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
+        png(paste0(print_png, "/", plot_prefix, ".ggsurvplot_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
           print(ggs)
         dev.off()
       }
