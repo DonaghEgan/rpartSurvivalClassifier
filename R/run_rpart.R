@@ -22,7 +22,7 @@
 #'
 #' @export
 
-run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, print_png = NULL, title_text = NULL, plot_prefix = NULL){
+run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el = NULL, print_pdf = NULL, print_png = NULL, title_text = NULL, plot_prefix = "rpart"){
 
   ##parse relevant columns from inputs
   if(is.null(join_el)){
@@ -69,13 +69,13 @@ run_rpart <- function(expr_df, gene_ids, clin_df, surv_event, surv_time, join_el
     } else {
     # graph showing how patients are dichotomised
       if(!is.null(print_pdf)){
-        pdf(paste0(print_pdf, "/", plot_prefix, ".rpart_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
+        pdf(paste0(print_pdf, "/", plot_prefix, "_fittree_", gene_id, "_", surv_event, ".pdf"), onefile = FALSE)
           rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }
 
       if(!is.null(print_png)){
-        png(paste0(print_png, "/", plot_prefix, ".rpart_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
+        png(paste0(print_png, "/", plot_prefix, "_fittree_", gene_id, "_", surv_event, ".png"), width = 800, height = 800)
           rattle::fancyRpartPlot(fit_tree, main = paste0(title_text,  gene_id, " - ", surv_event))
         dev.off()
       }

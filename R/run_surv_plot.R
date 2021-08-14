@@ -25,7 +25,7 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = "", plot_prefix = NULL){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = "", plot_prefix = "rpart"){
 
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))

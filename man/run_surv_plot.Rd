@@ -16,7 +16,7 @@ run_surv_plot(
   print_png = NULL,
   title_text = "",
   sub_text = "",
-  plot_prefix = NULL
+  plot_prefix = "rpart"
 )
 }
 \arguments{

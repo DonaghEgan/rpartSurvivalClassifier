@@ -14,7 +14,7 @@ run_rpart(
   print_pdf = NULL,
   print_png = NULL,
   title_text = NULL,
-  plot_prefix = NULL
+  plot_prefix = "rpart"
 )
 }
 \arguments{
