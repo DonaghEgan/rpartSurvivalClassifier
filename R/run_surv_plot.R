@@ -69,7 +69,7 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                    font.caption = c(20),
                                    font.x = c(20),
                                    font.y = c(20),
-                                   font.tickslab = c(16)))
+                                   font.tickslab = c(16))
 
       ##outputs
       if(!is.null(print_pdf)){
