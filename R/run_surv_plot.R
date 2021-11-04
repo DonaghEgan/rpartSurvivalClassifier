@@ -59,16 +59,16 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                    xlab = surv_time,
                                    ylab = paste0(surv_event, " Probability"),
                                    legend.title = paste0(gene_id, " ", expr_unit, ": "),
-                                   legend.labs = c(paste0("High Expression (n = ", ntab["High"], ")"), paste0("Low Expression (n = ", ntab["Low"], ")")),
+                                   legend.labs = c(paste0("High Expr. (n = ", ntab["High"], ")"), paste0("Low Expr. (n = ", ntab["Low"], ")")),
                                    pval.size = 5,
                                    font.legend = c(10, "plain", "black"),
                                    palette = col_palette,
                                    title = paste0(title_text, " - ", gene_id, "\n", sub_text),
-                                   font.title = c(24, "bold"),
-                                   font.subtitle = c(20, "bold"),
-                                   font.caption = c(20),
-                                   font.x = c(20),
-                                   font.y = c(20),
+                                   font.title = c(20, "bold"),
+                                   font.subtitle = c(18, "bold"),
+                                   font.caption = c(16),
+                                   font.x = c(18),
+                                   font.y = c(18),
                                    font.tickslab = c(16))
 
       ##outputs
