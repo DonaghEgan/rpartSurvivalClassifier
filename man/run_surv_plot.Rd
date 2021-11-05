@@ -16,7 +16,8 @@ run_surv_plot(
   print_png = NULL,
   title_text = "",
   sub_text = "",
-  plot_prefix = "rpart"
+  plot_prefix = "rpart",
+  plot_font_size = 20
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ run_surv_plot(
 \item{sub_text}{sub text for plot}
 
 \item{plot_prefix}{prefix for plot filename}
+
+\item{plot_font_size}{title plot font size from which others are derived (default: 20)}
 }
 \value{
 table from survival::survdiff (log rank test), ggsurvplot PDF printed
