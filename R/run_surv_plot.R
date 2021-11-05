@@ -12,7 +12,7 @@
 #' @param title_text title text for plot
 #' @param sub_text sub text for plot
 #' @param plot_prefix prefix for plot filename
-
+#' @param plot_font_size title plot font size from which others are derived (default: 20)
 #'
 #' @return table from survival::survdiff (log rank test), ggsurvplot PDF printed
 #'
@@ -25,8 +25,11 @@
 #'
 #' @export
 
-run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = "", plot_prefix = "rpart"){
+run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = "log2tpm", group_name = "_group", col_palette = NULL, print_pdf = NULL, print_png = NULL, title_text = "", sub_text = "", plot_prefix = "rpart", plot_font_size = 20){
 
+  if(!is.numeric(plot_font_size)){
+    exit("Plot font sizes must be numeric")
+  }
   surv_object <- survival::Surv(time = unlist(clin_tb[,surv_time]),
                                 event = unlist(clin_tb[,surv_event]))
 
@@ -64,12 +67,12 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                    font.legend = c(10, "plain", "black"),
                                    palette = col_palette,
                                    title = paste0(title_text, " - ", gene_id, "\n", sub_text),
-                                   font.title = c(20, "bold"),
-                                   font.subtitle = c(18, "bold"),
-                                   font.caption = c(16),
-                                   font.x = c(18),
-                                   font.y = c(18),
-                                   font.tickslab = c(16))
+                                   font.title = c(plot_font_size, "bold"),
+                                   font.subtitle = c(plot_font_size-2, "bold"),
+                                   font.caption = c(plot_font_size-4),
+                                   font.x = c(plot_font_size-2),
+                                   font.y = c(plot_font_size-2),
+                                   font.tickslab = c(plot_font_size-4))
 
       ##outputs
       if(!is.null(print_pdf)){
