@@ -56,13 +56,16 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
         col_palette <- c("red", "dodgerblue")
       }
 
+      ##legend
+      legend_labs <- c(paste0("High Expr. (n = ", ntab["High"], ")\n"), paste0("Low Expr. (n = ", ntab["Low"], ")"))
+
       ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
                                    pval = TRUE,
                                    legend = "bottom",
                                    xlab = surv_time,
                                    ylab = paste0(surv_event, " Probability"),
-                                   legend.title = paste0(gene_id, " ", expr_unit, ": "),
-                                   legend.labs = c(paste0("High Expr. (n = ", ntab["High"], ")"), paste0("Low Expr. (n = ", ntab["Low"], ")")),
+                                   legend.title = paste0(gene_id, " ", expr_unit, ":", "\n"),
+                                   legend.labs = legend_labs,
                                    palette = col_palette,
                                    title = paste0(title_text, " - ", gene_id, "\n", sub_text),
                                    font.title = c(plot_font_size, "bold"),
