@@ -57,14 +57,15 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
       }
 
       ##legend
-      legend_labs <- c(paste0("High Expr. (n = ", ntab["High"], ")\n"), paste0("Low Expr. (n = ", ntab["Low"], ")"))
+      legend_labs <- c(paste0("High Expr. (n = ", ntab["High"], ")"),
+                       paste0("Low Expr. (n = ", ntab["Low"], ")"))
 
       ggs <- survminer::ggsurvplot(fit1, data = clin_tb,
                                    pval = TRUE,
                                    legend = "bottom",
                                    xlab = surv_time,
                                    ylab = paste0(surv_event, " Probability"),
-                                   legend.title = paste0(gene_id, " ", expr_unit, ":", "\n"),
+                                   legend.title = paste0(expr_unit, ":"),
                                    legend.labs = legend_labs,
                                    palette = col_palette,
                                    title = paste0(title_text, " - ", gene_id, "\n", sub_text),
@@ -75,7 +76,8 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                    font.y = c(plot_font_size-1),
                                    font.tickslab = c(plot_font_size-2),
                                    pval.size = plot_font_size-13,
-                                   font.legend = c(plot_font_size-3, "plain", "black"),)
+                                   font.legend = c(plot_font_size-3, "plain", "black"),) +
+                   ggplot2::guides(colour = ggplot2::guide_legend(nrow = length(legend_labs)))
 
       ##outputs
       if(!is.null(print_pdf)){
