@@ -75,8 +75,8 @@ run_surv_plot <- function(clin_tb, gene_ids, surv_event, surv_time, expr_unit = 
                                    font.x = c(plot_font_size-1),
                                    font.y = c(plot_font_size-1),
                                    font.tickslab = c(plot_font_size-2),
-                                   pval.size = plot_font_size-13,
-                                   font.legend = c(plot_font_size-3, "plain", "black"),) +
+                                   pval.size = plot_font_size-14,
+                                   font.legend = c(plot_font_size-2, "plain", "black"),) +
                    ggplot2::guides(colour = ggplot2::guide_legend(nrow = length(legend_labs)))
 
       ##outputs
